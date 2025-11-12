@@ -19,7 +19,7 @@
 ---
 include:
   - board: nice_nano_v2
-    cmake-args: -DDTS_EXTRA_CPPFLAGS=-DMOUSE_PS2_ALT_PINS
+    #cmake-args: -DDTS_EXTRA_CPPFLAGS=-DMOUSE_PS2_ALT_PINS
     shield: tp-sofle_left
   - board: nice_nano_v2
     shield: tp-sofle_right
