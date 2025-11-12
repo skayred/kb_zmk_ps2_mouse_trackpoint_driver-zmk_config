@@ -65,6 +65,34 @@
 
 
 / {
+ macros {
+        wleft: wleft {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LGUI>, <&macro_press &kp LCTRL>
+                , <&macro_tap &kp LEFT>
+                , <&macro_release &kp LGUI>,<&macro_release &kp LCTRL>
+                ;
+        };
+        wright: wright {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&macro_press &kp LGUI>, <&macro_press &kp LCTRL>
+                , <&macro_tap &kp RIGHT>
+                , <&macro_release &kp LGUI>,<&macro_release &kp LCTRL>
+                ;
+        };
+    };
+
+    behaviors {
+        rot_kp: sensor_rotate_kp {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&wleft>, <&wright>;
+        };
+    };
 
    // Activate ADJUST layer by pressing raise and lower
     conditional_layers {
@@ -94,7 +122,7 @@
                  &kp LGUI &kp LALT &kp LCTRL &mo LOWER  &kp RET    &kp SPACE  &mo RAISE  &kp RCTRL &kp RALT  &kp RGUI
             >;
 
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &rot_kp>;
         };
 
         lower_layer {
