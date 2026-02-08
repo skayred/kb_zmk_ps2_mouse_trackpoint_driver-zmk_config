@@ -84,6 +84,9 @@
       // x-invert;
       // y-invert;
 
+      xy-swap = true;
+      x-inver = true;
+
       // Set the layer that should automatically activate when the mouse is
       // moving.
       layer-toggle = <MOUSE_TP>;
