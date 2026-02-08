@@ -84,8 +84,8 @@
       // x-invert;
       // y-invert;
 
-      xy-swap = true;
-      x-inver = true;
+      xy-swap;
+      x-invert;
 
       // Set the layer that should automatically activate when the mouse is
       // moving.
