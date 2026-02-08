@@ -98,7 +98,7 @@
 
       // How long to wait, after the last mouse movement, before deactivating
       // the layer (Default: 250)
-      layer-toggle-timeout-ms = <250>;
+      layer-toggle-timeout-ms = <500>;
     };
 
 
@@ -124,8 +124,8 @@
 
       // Enable clicking by tapping on the TP.
       // Not all TPs support this.
-      // tp-press-to-select;
-      // tp-press-to-select-threshold = <10>;
+      tp-press-to-select;
+      tp-press-to-select-threshold = <10>;
 
 
       // Adjust axis settings on the TP
