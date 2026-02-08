@@ -56,7 +56,6 @@
         chain-length = <30>; /* number of LEDs */
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
-        
         color-mapping = <
                 LED_COLOR_ID_GREEN
                 LED_COLOR_ID_RED
@@ -250,7 +249,7 @@
                                   &none           &none           &none           &none            &none           &none  &none &none &none &none
             >;
 
-            sensor-bindings = <&inc_dec_kp RGB_BRD RGB_BRI &inc_dec_kp RGB_SAD RGB_SAI>;
+            // sensor-bindings = <&inc_dec_kp RGB_BRD RGB_BRI &inc_dec_kp RGB_SAD RGB_SAI>;
         };
 
     };
