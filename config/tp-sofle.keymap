@@ -210,7 +210,7 @@
 &trans          &kp K_UNDO   &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans        &trans  &trans  &trans    &wleft    &trans   &wright    &trans  &trans
                         &trans       &trans       &trans       &trans        &trans  &trans  &trans    &trans    &trans   &trans
             >;
-#&studio_unlock
+//&studio_unlock
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
         };
 
