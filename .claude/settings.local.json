@@ -4,7 +4,10 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:zmk.dev)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(gh api:*)",
+      "Bash(python:*)",
+      "Bash(certutil -decode:*)"
     ]
   }
 }
