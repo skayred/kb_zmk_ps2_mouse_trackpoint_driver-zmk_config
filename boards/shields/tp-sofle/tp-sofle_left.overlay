@@ -484,7 +484,6 @@
 #ifdef MOUSE_PS2_DRIVER_UART
 
     &uart0 {
-        status = "disabled";
         compatible = "nordic,nrf-uarte";
 
         current-speed = MOUSE_PS2_UART_BAUD_RATE;
@@ -494,7 +493,6 @@
         pinctrl-names = "default", "sleep";
 
         uart_ps2: uart_ps2 {
-            status="disabled";
             compatible = "uart-ps2";
             scl-gpios = MOUSE_PS2_PIN_SCL_PRO_MICRO;
             sda-gpios = MOUSE_PS2_PIN_SDA_PRO_MICRO;
@@ -541,7 +539,7 @@
     trackpoint_listener: trackpoint_listener {
         compatible = "zmk,input-listener";
         device = <&mouse_ps2>;
-        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP)>,<&zip_xy_scaler 0 1>;
+        //input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP)>,<&zip_xy_scaler 0 1>;
         scroller {
             layers = <1>;
             //process-next;
@@ -549,10 +547,10 @@
         };
         mouse {
             layers = <4>;
-            input-processors = 
+            /*input-processors = 
                 <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP)>
                 //, <&zip_temp_layer 9 500>
-                ;
+                ;*/
         };
         
     };
