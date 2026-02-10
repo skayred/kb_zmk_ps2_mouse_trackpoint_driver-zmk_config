@@ -145,10 +145,6 @@
       status = "okay";
     };
 
-    &mouse_ps2_input_listener {
-      status = "okay";
-    };
-
     #ifdef MOUSE_PS2_DRIVER_UART
 
       &uart0 {

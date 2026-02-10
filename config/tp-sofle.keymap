@@ -9,7 +9,6 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/rgb.h>
 #include <dt-bindings/zmk/ext_power.h>
-#include "include/keys_fi.h"
 
 #define BASE 0
 #define LOWER 1
@@ -205,8 +204,8 @@
 //                |      |       |       |      |      |  |      |      |      |       |      |
             bindings = <
 &bt BT_CLR      &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                  &trans    &trans    &trans   &trans    &trans  &trans
-&bt OUT_BLE     &kp INS      &kp PSCRN    &kp K_CMENU  &trans       &trans                        &kp PG_UP &kp HOME    &kp UP   &kp END    &kp N0  &trans
-&bt OUT_USB     &kp LALT     &kp LCTRL    &kp LSHFT    &trans       &kp CLCK                      &kp PG_DN &kp LEFT  &kp DOWN &kp RIGHT &kp DEL &kp BSPC
+&out OUT_BLE    &kp INS      &kp PSCRN    &kp K_CMENU  &trans       &trans                        &kp PG_UP &kp HOME    &kp UP   &kp END    &kp N0  &trans
+&out OUT_USB    &kp LALT     &kp LCTRL    &kp LSHFT    &trans       &kp CLCK                      &kp PG_DN &kp LEFT  &kp DOWN &kp RIGHT &kp DEL &kp BSPC
 &studio_unlock  &kp K_UNDO   &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans        &trans  &trans  &trans    &wleft    &trans   &wright    &trans  &trans
                         &trans       &trans       &trans       &trans        &trans  &trans  &trans    &trans    &trans   &trans
             >;
