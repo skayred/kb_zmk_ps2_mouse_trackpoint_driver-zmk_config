@@ -71,55 +71,23 @@
   #ifdef MOUSE_PS2_DT_PRESENT
 
    /*
-    * Input Listener Config
-    */
-
-    &mouse_ps2_input_listener {
-
-      // Adjust pointing device axes.
-      // This adjusts the values inside the zmk driver. Some
-      // trackpoints also allow you to adjust it in their firmware. Check
-      // the driver options below for more info.
-      // xy-swap;
-      // x-invert;
-      // y-invert;
-
-      xy-swap;
-      x-invert;
-      y-invert;
-
-      // Set the layer that should automatically activate when the mouse is
-      // moving.
-      layer-toggle = <MOUSE_TP>;
-
-      // How long the mouse needs to move for before the layer is activated (to
-      // avoid accidental activations while typing) (Default: 250)
-      layer-toggle-delay-ms = <250>;
-
-      // How long to wait, after the last mouse movement, before deactivating
-      // the layer (Default: 250)
-      layer-toggle-timeout-ms = <500>;
-    };
-
-
-   /*
     * Mouse Driver Settings
     */
 
     &mouse_ps2 {
 
       // How sensitive the TP is (Default: 128)
-      tp-sensitivity = <165>;
+      tp-sensitivity = <205>;
 
 
       // The maximum mouse movement speed the TP will accelarate to
       // (Default: 97)
-      tp-val6-upper-speed = <120>;
+      tp-val6-upper-speed = <200>;
 
 
       // Negative Inertia (Default: 6)
       // Makes the TP feel more responsive and "overshoot" less.
-      tp-neg-inertia = <8>;
+      tp-neg-inertia = <10>;
 
 
       // Enable clicking by tapping on the TP.
@@ -135,9 +103,9 @@
       //
       // Alternatively consider achieving the same effect using the
       //  `input-listener` settings below.
-      // tp-xy-swap;
-      // tp-x-invert;
-      // tp-y-invert;
+      tp-xy-swap;
+      tp-x-invert;
+      tp-y-invert;
 
 
       // Set sampling rate
