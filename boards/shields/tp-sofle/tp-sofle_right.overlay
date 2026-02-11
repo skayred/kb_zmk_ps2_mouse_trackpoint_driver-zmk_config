@@ -6,7 +6,7 @@
 
 #include "tp-sofle.dtsi"
 
-&default_transform {
+&default_transform0 {
     col-offset = <6>;
 };
 
