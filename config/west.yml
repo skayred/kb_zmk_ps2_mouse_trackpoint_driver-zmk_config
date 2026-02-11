@@ -35,7 +35,7 @@ manifest:
     # up-to-date-ZMK
     - name: zmk
       remote: zmkfirmware
-      revision: v0.2
+      revision: v0.3
       import: app/west.yml
 
     # urob's zmk fork with mouse PR & many extra features, but may be
