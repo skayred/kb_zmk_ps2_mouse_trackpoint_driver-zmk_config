@@ -1,0 +1,15 @@
+file_format: "1"
+id: tp-sofle
+name: TPSofle
+type: shield
+url: https://github.com/josefadamcik/SofleKeyboard
+requires: [pro_micro]
+exposes: [i2c_oled]
+features:
+  - keys
+  - display
+  - encoder
+  - underglow
+siblings:
+  - tp-sofle_left
+  - tp-sofle_right
