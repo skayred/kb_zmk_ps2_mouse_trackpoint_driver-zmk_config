@@ -58,12 +58,12 @@ manifest:
     #
 
     # Module for PS/2 mouse & TP driver
-    - name: kb_zmk_ps2_mouse_trackpoint_driver
-      remote: infused-kim
-      revision: main
     #- name: kb_zmk_ps2_mouse_trackpoint_driver
-    #  remote: badjeff
+    #  remote: infused-kim
     #  revision: main
+    - name: kb_zmk_ps2_mouse_trackpoint_driver
+      remote: badjeff
+      revision: main
 
     - name: zmk-pmw3610-driver
       remote: badjeff
