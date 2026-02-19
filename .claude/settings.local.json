@@ -8,7 +8,9 @@
       "Bash(gh api:*)",
       "Bash(python:*)",
       "Bash(certutil -decode:*)",
-      "WebFetch(domain:docs.zephyrproject.org)"
+      "WebFetch(domain:docs.zephyrproject.org)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl:*)"
     ]
   }
 }
