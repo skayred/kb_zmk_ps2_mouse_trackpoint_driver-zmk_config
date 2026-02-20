@@ -241,7 +241,7 @@
 &trans &mkp MB4 &mkp MB5 &mkp RCLK &mkp MCLK &mkp LCLK                          &trans    &trans    &trans   &trans   &trans &trans
 &trans &trans   &trans   &trans    &trans    &trans                             &trans    &trans    &trans   &trans   &trans &trans
 &trans &trans   &trans   &trans    &trans    &trans    &trans         &trans    &trans    &trans    &trans   &trans   &trans &trans
-                         &trans    &trans    &trans    &trans         &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4 &mkp MB5
+                &trans   &trans    &trans    &trans    &trans         &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4 &mkp MB5
             >;
     };
 
