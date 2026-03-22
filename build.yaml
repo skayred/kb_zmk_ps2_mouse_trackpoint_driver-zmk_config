@@ -24,6 +24,7 @@ include:
     shield: charybdis_left
   - board: nice_nano_v2
     #shield: tp-sofle_right
+    snippet: zmk-usb-logging
     shield: charybdis_right
 
   # Alternative PINs firmware
