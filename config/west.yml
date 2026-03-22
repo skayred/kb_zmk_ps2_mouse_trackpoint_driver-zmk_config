@@ -12,7 +12,8 @@ manifest:
       url-base: https://github.com/badjeff
     - name: skayred
       url-base: https://github.com/skayred
-
+    - name: george-norton
+      url-base: https://github.com/george-norton
   projects:
 
     #
@@ -70,8 +71,8 @@ manifest:
     #  remote: badjeff
     #  revision: main
 
-    - name: zmk-pmw3610-driver
-      remote: badjeff
+    - name: zmk-driver-pmw3360
+      remote: george-norton
       revision: main
 
   self:
