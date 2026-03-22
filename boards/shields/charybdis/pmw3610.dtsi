@@ -1,10 +1,10 @@
 &pinctrl {
 	spi0_default: spi0_default {
 		group1 {
-			pinmux = <SPI0_CSN_P21>, <SPI0_SCK_P0>, <SPI0_TX_P3>;
+			pinmux = <SPI0_CSN_P31>, <SPI0_SCK_P8>, <SPI0_TX_P17>;
 		};
 		group2 {
-			pinmux = <SPI0_RX_P2>;
+			pinmux = <SPI0_RX_P20>;
 			input-enable;
 		};
 	};
@@ -12,7 +12,7 @@
 
 &spi0 {
 	status = "okay";
-	cs-gpios = <&gpio0 21 GPIO_ACTIVE_LOW>;
+	cs-gpios = <&gpio0 31 GPIO_ACTIVE_LOW>;
 	mouse: mouse@0 {
 		compatible = "pixart,pmw3360";
 		status = "okay";
