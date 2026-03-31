@@ -24,3 +24,7 @@
 &right_encoder {
     status = "okay";
 };
+
+&trackpoint_listener {
+    status = "okay";
+};
