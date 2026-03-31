@@ -548,18 +548,8 @@
     };
 };*/
 
-&mouse_ps2 {
-    status = "okay";
-};
 
 // Overrides for the input-split child node
 &trackpoint_split {
     device = <&mouse_ps2>;
-
-    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP)>,<&zip_xy_transform (INPUT_TRANSFORM_Y_INVERT)>,<&zip_xy_transform (INPUT_TRANSFORM_X_INVERT)>,<&zip_xy_scaler 1 1>,<&zip_temp_layer 4 500>;
-    scroller {
-        layers = <1>;
-        //process-next;
-        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP)>,<&zip_xy_transform (INPUT_TRANSFORM_X_INVERT)>,<&zip_xy_scaler 1 2>,<&zip_x_scaler 1 3>,<&zip_xy_to_scroll_mapper>;
-    };
 };
