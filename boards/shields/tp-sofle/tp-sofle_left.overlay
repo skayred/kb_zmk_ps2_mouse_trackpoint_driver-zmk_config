@@ -548,6 +548,10 @@
     };
 };*/
 
+&mouse_ps2 {
+    status = "okay";
+};
+
 // Overrides for the input-split child node
 &trackpoint_split {
     device = <&mouse_ps2>;
