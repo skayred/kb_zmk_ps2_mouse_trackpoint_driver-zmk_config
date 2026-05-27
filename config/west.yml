@@ -71,8 +71,10 @@ manifest:
     #  remote: badjeff
     #  revision: main
 
+    # PMW3360 trackball driver. Points at the skayred fork, which adds
+    # CONFIG_PMW3360_REPORT_RATE_MS (motion-report throttle) on top of KOHSUK's pmw3360 branch.
     - name: zmk-pmw3360-driver
-      remote: KOHSUK
+      remote: skayred
       revision: pmw3360
 
   self:
