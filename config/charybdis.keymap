@@ -16,6 +16,7 @@
 #define LOWER 1
 #define RAISE 2
 #define ADJUST 3
+#define MOUSE 4
 
 
 / {
@@ -67,13 +68,13 @@
 // |  ESC  |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   | BKSPC |
 // |  TAB  |  A|afi  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   INS   '   |
 // | SHIFT |  Z  |  X  |  C   |  V   |  B   |  PAUSE  |  |       |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-//               | GUI | ALT  | CTRL | LOWER|  ENTER |  | SPACE | RAISE| =  | +   | -  |
+//               | ENTER | CTRL | LOWER | GUI | ALT |  |  -  | SPACE | RAISE |
             bindings = <
 &kp GRAVE &kp N1 &kp N2   &kp N3   &kp N4    &kp N5                           &kp N6 &kp N7    &kp N8    &kp N9   &kp N0   &kp DELETE
 &kp ESC   &kp Q  &kp W    &kp E    &kp R     &kp T                            &kp Y  &kp U     &kp I     &kp O    &kp P    &kp BSPC
 &kp TAB   &kp A  &kp S    &kp D    &kp F     &kp G                            &kp H  &kp J     &kp K     &kp L    &kp SEMI &kp SQT
 &kp LSHFT &kp Z  &kp X    &kp C    &kp V     &kp B                            &kp N  &kp M     &kp COMMA &kp DOT  &kp FSLH &kp INS
-          &kp LGUI &kp LALT &kp LCTRL &mo LOWER  &kp RET                      &kp SPACE  &mo RAISE  &kp EQUAL
+          &kp RET &kp LCTRL &mo LOWER &kp LGUI  &kp LALT                      &kp MINUS  &kp SPACE  &mo RAISE
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &rot_kp>;
@@ -105,13 +106,13 @@
 // | BTCLR | BT1  | BT2  |  BT3  |  BT4  |  BT5 |                | num0 | num1 | num2  | num3 | num4  | num5  |
 // |OUT_BLE| INS  | PSCR | GUI   |       |      |                | PGUP | HOME |   ^   | END  | num6  | num7  |
 // |OUT_USB| ALT  | CTRL | SHIFT |       | CAPS |                | PGDN |   <- |   v   |  ->  | num8  | num9  |
-// |       | UNDO | CUT  | COPY  | PASTE |      |      |  |      |      |wleft |       |wright|       |       |
+// |       | UNDO | CUT  | COPY  | PASTE |      |      |  |      |      | wleft| wright|       |       |
 //                |      |       |       |      |      |  |      |      |      |       |      |
             bindings = <
 &bt BT_CLR      &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                  &kp KP_N0 &kp KP_N1 &kp KP_N2 &kp KP_N3  &kp KP_N4 &kp KP_N5
 &out OUT_BLE    &kp INS      &kp PSCRN    &kp K_CMENU  &trans       &trans                        &kp PG_UP &kp HOME  &kp UP    &kp END    &kp KP_N6 &kp KP_N6
 &out OUT_USB    &kp LALT     &kp LCTRL    &kp LSHFT    &trans       &kp CLCK                      &kp PG_DN &kp LEFT  &kp DOWN  &kp RIGHT  &kp KP_N8 &kp KP_N9
-&trans          &kp K_UNDO   &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans                        &trans    &wleft    &trans    &wright    &trans    &trans
+&trans          &kp K_UNDO   &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans                        &trans    &trans    &wleft    &wright    &trans    &trans
                 &trans       &trans       &trans       &trans        &trans                       &trans  &trans    &trans
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
@@ -134,6 +135,19 @@
             >;
 
             // sensor-bindings = <&inc_dec_kp RGB_BRD RGB_BRI &inc_dec_kp RGB_SAD RGB_SAI>;
+        };
+
+        mouse_layer {
+            display-name = "mouse";
+// Auto-activated by trackball movement (see &zip_temp_layer on trackball_listener).
+// |       |     |     |      |      |      |        | LCLK | MCLK | RCLK | MB4(back) | MB5(fwd) |       |
+            bindings = <
+&trans &trans &trans &trans &trans &trans                                    &trans    &trans    &trans    &trans   &trans   &trans
+&trans &trans &trans &trans &trans &trans                                    &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4 &mkp MB5 &trans
+&trans &trans &trans &trans &trans &trans                                    &trans    &trans    &trans    &trans   &trans   &trans
+&trans &trans &trans &trans &trans &trans                                    &trans    &trans    &trans    &trans   &trans   &trans
+       &trans &trans &trans &trans &trans                                    &trans    &trans    &trans
+            >;
         };
 
     };

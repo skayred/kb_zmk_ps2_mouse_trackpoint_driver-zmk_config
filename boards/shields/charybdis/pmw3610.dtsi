@@ -1,3 +1,5 @@
+#include <input/processors.dtsi>
+
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
@@ -44,5 +46,13 @@
     compatible = "zmk,input-listener";
     device = <&trackball>;
 
+    // Activate the MOUSE layer (index 4) for 500ms on trackball movement.
+    input-processors = <&zip_temp_layer 4 500>;
+
+    // On the RAISE layer (index 2), trackball movement scrolls instead of moving the cursor.
+    scroller {
+        layers = <2>;
+        input-processors = <&zip_xy_to_scroll_mapper>;
+    };
   };
 };
