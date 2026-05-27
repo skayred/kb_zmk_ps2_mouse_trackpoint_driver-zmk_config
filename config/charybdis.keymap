@@ -44,13 +44,15 @@
    // Trackball gestures on the RAISE layer (zettaface/zmk-input-processor-keybind):
    // quantize net movement into discrete keystrokes. bindings = [right, left, up, down].
    // Right/left switch virtual desktops; up/down are volume.
-   // tick is in movement counts; at ~800 effective CPI, 315 counts ~= 1 cm of travel.
+   // tick is in movement counts; at ~800 effective CPI, ~315 counts = 1 cm of travel.
+   // Single global tick (stock module) -> it governs BOTH axes: lower = faster volume,
+   // but also more desktop switches per swipe. Tune to taste.
     zip_keybind: zip_keybind {
         compatible = "zmk,input-processor-keybind";
         #input-processor-cells = <0>;
         mode = <1>;
         bindings = <&wright>, <&wleft>, <&kp C_VOL_UP>, <&kp C_VOL_DN>;
-        tick = <315>;
+        tick = <150>;
         tap-ms = <10>;
         track_remainders;
     };

@@ -59,9 +59,18 @@
 
     // On the RAISE layer (index 2), movement is quantized into keystrokes:
     // left/right switch virtual desktops, up/down are volume (see &zip_keybind in the keymap).
+    // `process-next` lets the next override run so we can cancel the raw motion below.
+    // (ZMK still reports default movement for layer-overrides; see zmkfirmware/zmk#2967.)
     gestures {
         layers = <2>;
         input-processors = <&zip_keybind>;
+        process-next;
+    };
+
+    // Zero the trackball motion on RAISE so the cursor doesn't drift while gesturing.
+    gestures_prevent_move {
+        layers = <2>;
+        input-processors = <&zip_xy_scaler 0 1>;
     };
   };
 };
