@@ -1,4 +1,5 @@
 #include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
 
 &pinctrl {
     spi0_default: spi0_default {
@@ -49,10 +50,18 @@
     // Activate the MOUSE layer (index 4) for 500ms on trackball movement.
     input-processors = <&zip_temp_layer 4 500>;
 
-    // On the RAISE layer (index 2), trackball movement scrolls instead of moving the cursor.
+    // On the LOWER layer (index 1), trackball movement scrolls instead of moving the cursor.
+    // Y is inverted so vertical scroll feels natural (left/right is already correct).
     scroller {
+        layers = <1>;
+        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_Y_INVERT)>, <&zip_xy_to_scroll_mapper>;
+    };
+
+    // On the RAISE layer (index 2), movement is quantized into keystrokes:
+    // left/right switch virtual desktops, up/down are volume (see &zip_keybind in the keymap).
+    gestures {
         layers = <2>;
-        input-processors = <&zip_xy_to_scroll_mapper>;
+        input-processors = <&zip_keybind>;
     };
   };
 };

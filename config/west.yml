@@ -14,6 +14,8 @@ manifest:
       url-base: https://github.com/skayred
     - name: KOHSUK
       url-base: https://github.com/KOHSUK
+    - name: zettaface
+      url-base: https://github.com/zettaface
   projects:
 
     #
@@ -76,6 +78,11 @@ manifest:
     - name: zmk-pmw3360-driver
       remote: skayred
       revision: pmw3360
+
+    # Quantizes trackball movement into keystrokes (RAISE-layer gestures).
+    - name: zmk-input-processor-keybind
+      remote: zettaface
+      revision: main
 
   self:
     path: config

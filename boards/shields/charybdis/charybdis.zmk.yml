@@ -4,10 +4,8 @@ name: Charybdis
 type: shield
 url: https://github.com/josefadamcik/SofleKeyboard
 requires: [pro_micro]
-exposes: [i2c_oled]
 features:
   - keys
-  - display
 siblings:
   - charybdis_left
   - charybdis_right
