@@ -72,5 +72,14 @@
         layers = <2>;
         input-processors = <&zip_xy_scaler 0 1>;
     };
+
+    // Slow plain cursor movement ~20% (x4/5). Targets the auto MOUSE layer (4),
+    // which is active during normal pointing. Placed last so the scroller (LOWER)
+    // and gesture (RAISE) overrides above match first and stop the chain -> this
+    // never runs while scrolling or gesturing, leaving those speeds untouched.
+    slow_cursor {
+        layers = <4>;
+        input-processors = <&zip_xy_scaler 4 5>;
+    };
   };
 };
