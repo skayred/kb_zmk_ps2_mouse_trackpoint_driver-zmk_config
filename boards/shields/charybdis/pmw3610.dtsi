@@ -42,13 +42,20 @@
     };
 };
 
+// Auto-mouse layer (4) deactivation: by default ANY keypress drops the temp
+// layer. Exclude all thumb positions (48-55) so the mouse buttons, LOWER and
+// RAISE never drop it -- only the main (non-thumb) keys deactivate the layer.
+&zip_temp_layer {
+    excluded-positions = <48 49 50 51 52 53 54 55>;
+};
+
 / {
   trackball_listener {
     compatible = "zmk,input-listener";
     device = <&trackball>;
 
-    // Activate the MOUSE layer (index 4) for 500ms on trackball movement.
-    input-processors = <&zip_temp_layer 4 500>;
+    // Activate the MOUSE layer (index 4) for 1000ms on trackball movement.
+    input-processors = <&zip_temp_layer 4 1000>;
 
     // On the LOWER layer (index 1), trackball movement scrolls instead of moving the cursor.
     // Y is inverted so vertical scroll feels natural (left/right is already correct).
@@ -73,13 +80,13 @@
         input-processors = <&zip_xy_scaler 0 1>;
     };
 
-    // Slow plain cursor movement ~20% (x4/5). Targets the auto MOUSE layer (4),
+    // Slow plain cursor movement to 60% (x3/5). Targets the auto MOUSE layer (4),
     // which is active during normal pointing. Placed last so the scroller (LOWER)
     // and gesture (RAISE) overrides above match first and stop the chain -> this
     // never runs while scrolling or gesturing, leaving those speeds untouched.
     slow_cursor {
         layers = <4>;
-        input-processors = <&zip_xy_scaler 4 5>;
+        input-processors = <&zip_xy_scaler 3 5>;
     };
   };
 };

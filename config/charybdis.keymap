@@ -142,13 +142,15 @@
         mouse_layer {
             display-name = "mouse";
 // Auto-activated by trackball movement (see &zip_temp_layer on trackball_listener).
-// |       |     |     |      |      |      |        | LCLK | MCLK | RCLK | MB4(back) | MB5(fwd) |       |
+// Mouse buttons live on the LEFT thumb cluster (click with the hand opposite the ball):
+//   CTRL->MB4   GUI->LCLK   ALT->MCLK   ENTER->RCLK   (LOWER kept for scroll access)
+// Non-thumb keys deactivate this layer; all thumbs are excluded (excluded-positions in pmw3610.dtsi).
             bindings = <
-&trans &trans &trans &trans &trans &trans                                    &trans    &trans    &trans    &trans   &trans   &trans
-&trans &trans &trans &trans &trans &trans                                    &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4 &mkp MB5 &trans
-&trans &trans &trans &trans &trans &trans                                    &trans    &trans    &trans    &trans   &trans   &trans
-&trans &trans &trans &trans &trans &trans                                    &trans    &trans    &trans    &trans   &trans   &trans
-       &trans &trans &trans &trans &trans                                    &trans    &trans    &trans
+&trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
+&trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
+&trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
+&trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
+         &mkp MB4 &trans  &mkp LCLK &mkp MCLK &mkp RCLK                      &trans    &trans    &trans
             >;
         };
 
