@@ -45,10 +45,7 @@
 // Auto-mouse layer (4) deactivation: by default ANY keypress drops the temp
 // layer. Exclude all thumb positions (48-55) so the mouse buttons, LOWER and
 // RAISE never drop it -- only the main (non-thumb) keys deactivate the layer.
-// require-prior-idle-ms: don't arm the layer if a key was pressed in the last
-// 150ms, so brushing the ball mid-typing won't turn thumb keys into clicks.
 &zip_temp_layer {
-    require-prior-idle-ms = <150>;
     excluded-positions = <48 49 50 51 52 53 54 55>;
 };
 
@@ -57,8 +54,8 @@
     compatible = "zmk,input-listener";
     device = <&trackball>;
 
-    // Activate the MOUSE layer (index 4) for 1000ms on trackball movement.
-    input-processors = <&zip_temp_layer 4 1000>;
+    // Activate the MOUSE layer (index 4) for 2000ms on trackball movement.
+    input-processors = <&zip_temp_layer 4 2000>;
 
     // On the LOWER layer (index 1), trackball movement scrolls instead of moving the cursor.
     // Y is inverted so vertical scroll feels natural (left/right is already correct).

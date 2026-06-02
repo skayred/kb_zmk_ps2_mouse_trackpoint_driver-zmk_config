@@ -66,6 +66,22 @@
         };
     };
 
+    behaviors {
+        // Thumb click/modifier hold-tap: quick TAP = mouse button, HOLD = modifier.
+        // bindings = <hold>, <tap> -> hold uses &kp (keycode), tap uses &mkp (mouse button).
+        // Invoke as `&mclk <modifier> <mouse-button>`, e.g. &mclk LCTRL MB4.
+        // Point of it: a thumb tap is ALWAYS a click (never a bare modifier), so a click that
+        // lands before the auto-mouse layer finishes arming can't fire a lone LGUI -> no
+        // accidental Windows Start menu. A long press still gives Ctrl/Alt/Gui.
+        mclk: thumb_click_mod {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&mkp>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
@@ -113,7 +129,7 @@
 // |OUT_USB| ALT  | CTRL | SHIFT |       | CAPS |                | PGDN |   <- |   v   |  ->  | num8  | num9  |
 // |       | UNDO | CUT  | COPY  | PASTE |      |      |  |      |      | wleft| wright|       |       |
 //                |      |       |       |      |      |  |      |      |      |       |      |
-// Left-thumb mouse clicks (mirrors the MOUSE layer): CTRL->MB4  GUI->LCLK  ALT->MCLK  ENTER->RCLK.
+// Left-thumb mouse clicks (gestures still on the ball): CTRL->MB4  GUI->LCLK  ALT->MCLK  ENTER->RCLK.
 // Ball keeps doing gestures here (movement is zeroed), so this adds clicks without any cursor move.
             bindings = <
 &bt BT_CLR      &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                  &kp KP_N0 &kp KP_N1 &kp KP_N2 &kp KP_N3  &kp KP_N4 &kp KP_N5
@@ -145,14 +161,14 @@
             display-name = "mouse";
 // Auto-activated by trackball movement (see &zip_temp_layer on trackball_listener).
 // Mouse buttons live on the LEFT thumb cluster (click with the hand opposite the ball):
-//   CTRL->MB4   GUI->LCLK   ALT->MCLK   ENTER->RCLK   (LOWER kept for scroll access)
+//   CTRL: tap MB4 / hold Ctrl   GUI: LCLK (drag)   ALT: tap MCLK / hold Alt   ENTER: RCLK   (LOWER kept)
 // Non-thumb keys deactivate this layer; all thumbs are excluded (excluded-positions in pmw3610.dtsi).
             bindings = <
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
-         &mkp MB4 &trans  &mkp LCLK &mkp MCLK &mkp RCLK                      &trans    &trans    &trans
+         &mclk LCTRL MB4 &trans &mkp LCLK &mclk LALT MCLK &mkp RCLK          &trans    &trans    &trans
             >;
         };
 
