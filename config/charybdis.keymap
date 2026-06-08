@@ -143,14 +143,14 @@
         adjust_layer {
 // ------------------------------------------------------------------------------------------------------------
 // | BTCLR | BT1 | BT2 | BT3 | BT4 | BT5 |                   |  7  |  8  |  9  |     |     |     |
-// | EXTPWR|     |     |     |     |     |                   |  4  |  5  |  6  |     |     |     |
+// |       |     |     |     |     |     |                   |  4  |  5  |  6  |     |     |     |
 // |       |     |     |     |     |     |                   |  1  |  2  |  3  |  0  |  .  |     |
 // | studio|     |     |     |     |     |        |  |       |     |     |     |     |     |     |
 //                |     |     |     |     |        |  |       |     |     |     |
             display-name = "adjust";
             bindings = <
 &bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            &none &none  &none &none &none &none
-&ext_power EP_TOG &none           &none           &none           &none           &none                                   &kp KP_N7 &kp KP_N8 &kp KP_N9 &none     &none      &none
+&none             &none           &none           &none           &none           &none                                   &kp KP_N7 &kp KP_N8 &kp KP_N9 &none     &none      &none
 &none             &none           &none           &none           &none           &none                                   &kp KP_N4 &kp KP_N5 &kp KP_N6 &none     &none      &none
 &studio_unlock    &none           &none           &none           &none           &none                                   &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N0 &kp KP_DOT &none
                   &none           &none           &none           &trans           &none                                  &none  &none &none
@@ -161,14 +161,15 @@
             display-name = "mouse";
 // Auto-activated by trackball movement (see &zip_temp_layer on trackball_listener).
 // Mouse buttons live on the LEFT thumb cluster (click with the hand opposite the ball):
-//   CTRL: tap MB4 / hold Ctrl   GUI: LCLK (drag)   ALT: tap MCLK / hold Alt   ENTER: RCLK   (LOWER kept)
+//   CTRL: tap MB4 / hold Ctrl   GUI: tap LCLK / hold Win   ALT: tap MCLK / hold Alt   ENTER: RCLK   (LOWER kept)
+// Note: GUI is now a hold-tap, so click-and-hold dragging on that thumb is no longer possible.
 // Non-thumb keys deactivate this layer; all thumbs are excluded (excluded-positions in pmw3610.dtsi).
             bindings = <
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
 &trans   &trans &trans    &trans    &trans    &trans                         &trans    &trans    &trans    &trans   &trans   &trans
-         &mclk LCTRL MB4 &trans &mkp LCLK &mclk LALT MCLK &mkp RCLK          &trans    &trans    &trans
+         &mclk LCTRL MB4 &trans &mclk LGUI LCLK &mclk LALT MCLK &mkp RCLK          &trans    &trans    &trans
             >;
         };
 
