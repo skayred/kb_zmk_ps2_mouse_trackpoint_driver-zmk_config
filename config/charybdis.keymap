@@ -153,7 +153,7 @@
 &none             &none           &none           &none           &none           &none                                   &kp KP_N7 &kp KP_N8 &kp KP_N9 &none     &none      &none
 &none             &none           &none           &none           &none           &none                                   &kp KP_N4 &kp KP_N5 &kp KP_N6 &none     &none      &none
 &studio_unlock    &none           &none           &none           &none           &none                                   &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N0 &kp KP_DOT &none
-                  &none           &none           &none           &trans           &none                                  &none  &none &none
+                  &kp LCTRL       &none           &kp LGUI        &kp LALT        &kp RET                                &kp MINUS &kp SPACE &none
             >;
         };
 
