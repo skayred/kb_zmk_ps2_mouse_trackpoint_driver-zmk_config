@@ -1,0 +1,175 @@
+/*
+ * Keyless central for the TPSofle, on a Seeed XIAO nRF52840 (seeeduino_xiao_ble).
+ * Both halves are BLE peripherals; this board holds the keymap, talks to the host
+ * and has the PMW3360 trackball.
+ *
+ * Standalone on purpose: tp-sofle.dtsi uses &pro_micro pins, which the XIAO does
+ * not have, so only the shared layout is included here.
+ *
+ * XIAO pin map (Dn -> nRF pin):
+ *   D0 P0.02  D1 P0.03  D2 P0.28  D3 P0.29  D4 P0.04  D5 P0.05
+ *   D6 P1.11  D7 P1.12  D8 P1.13  D9 P1.14  D10 P1.15
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <dt-bindings/led/led.h>
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
+#include "tp-sofle-layouts.dtsi"
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &physical_layout0;
+        zmk,underglow = &led_strip;
+    };
+
+    // No keys on this board yet: a mock kscan that never reports anything.
+    // Labelled kscan0 so the shared physical layout resolves to it.
+    kscan0: mock_kscan {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+
+    // The encoders are on the halves; the central only needs the sensor list so
+    // the keymap's sensor-bindings line up with the forwarded encoder events.
+    left_encoder: encoder_left {
+        compatible = "alps,ec11";
+        a-gpios = <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <80>;
+        status = "disabled";
+    };
+
+    right_encoder: encoder_right {
+        compatible = "alps,ec11";
+        a-gpios = <&gpio0 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <80>;
+        status = "disabled";
+    };
+
+    // Placeholder external-power switch on D0 (P0.02). The keymap's &ext_power
+    // key runs here and is forwarded to the halves, where it switches the real
+    // nice!nano VCC output; the XIAO has no switchable power of its own.
+    ext-power {
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&left_encoder &right_encoder>;
+        triggers-per-rotation = <20>;
+    };
+};
+
+/*
+ * PMW3360 trackball on SPI2 (the XIAO's default SPI pins):
+ *   SCK D8 (P1.13), MISO D9 (P1.14), MOSI D10 (P1.15), CS D2 (P0.28), MOTION/IRQ D3 (P0.29)
+ */
+&pinctrl {
+    spi2_trackball_default: spi2_trackball_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,
+                <NRF_PSEL(SPIM_MOSI, 1, 15)>,
+                <NRF_PSEL(SPIM_MISO, 1, 14)>;
+        };
+    };
+
+    spi2_trackball_sleep: spi2_trackball_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,
+                <NRF_PSEL(SPIM_MOSI, 1, 15)>,
+                <NRF_PSEL(SPIM_MISO, 1, 14)>;
+            low-power-enable;
+        };
+    };
+
+    // Placeholder LED data pin, see &spi3 below.
+    spi3_led_default: spi3_led_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 3)>;
+        };
+    };
+
+    spi3_led_sleep: spi3_led_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 3)>;
+            low-power-enable;
+        };
+    };
+};
+
+&spi2 {
+    status = "okay";
+    compatible = "nordic,nrf-spim";
+    pinctrl-0 = <&spi2_trackball_default>;
+    pinctrl-1 = <&spi2_trackball_sleep>;
+    pinctrl-names = "default", "sleep";
+    cs-gpios = <&gpio0 28 GPIO_ACTIVE_LOW>;
+
+    trackball: trackball@0 {
+        status = "okay";
+        compatible = "pixart,pmw3360";
+        reg = <0>;
+        spi-max-frequency = <2000000>;
+        irq-gpios = <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+    };
+};
+
+/*
+ * Placeholder 1-LED strip on D1 (P0.03). The keymap's &rgb_ug keys run on the
+ * central and are forwarded to the halves, so the central needs the underglow
+ * driver even though it has no LEDs of its own.
+ */
+&spi3 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+    pinctrl-0 = <&spi3_led_default>;
+    pinctrl-1 = <&spi3_led_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-spi";
+        reg = <0>;
+        spi-max-frequency = <4000000>;
+        chain-length = <1>;
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+        color-mapping = <
+            LED_COLOR_ID_GREEN
+            LED_COLOR_ID_RED
+            LED_COLOR_ID_BLUE
+        >;
+    };
+};
+
+// Auto-mouse layer (4) deactivation: by default ANY keypress drops the temp
+// layer. Exclude all thumb positions (50-59), as on the Charybdis, so the mouse
+// buttons (left thumbs), LOWER and RAISE never drop it -- only the main
+// (non-thumb) keys deactivate the layer.
+&zip_temp_layer {
+    excluded-positions = <50 51 52 53 54 55 56 57 58 59>;
+};
+
+/ {
+  trackball_listener {
+    compatible = "zmk,input-listener";
+    device = <&trackball>;
+
+    // Activate the MOUSE_KEYS layer (index 4) for 500ms on trackball movement.
+    input-processors = <&zip_temp_layer 4 500>;
+
+    // On the LOWER layer (index 1), trackball movement scrolls instead of moving
+    // the cursor, at 50% speed, Y inverted for natural vertical scroll.
+    scroller {
+        layers = <1>;
+        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_Y_INVERT)>, <&zip_xy_scaler 1 2>, <&zip_xy_to_scroll_mapper>;
+    };
+  };
+};

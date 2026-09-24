@@ -1,6 +1,6 @@
 file_format: "1"
-id: tp-sofle
-name: TPSofle
+id: saver
+name: Saver
 type: shield
 url: https://github.com/josefadamcik/SofleKeyboard
 requires: [pro_micro]
@@ -9,8 +9,6 @@ features:
   - keys
   - display
   - encoder
-  - underglow
 siblings:
-  - tp-sofle_left
-  - tp-sofle_right
-  - tp-sofle_central
+  - saver_left
+  - saver_right

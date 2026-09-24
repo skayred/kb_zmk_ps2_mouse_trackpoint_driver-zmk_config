@@ -10,8 +10,13 @@ keyboard is a ZMK *shield* running on a `nice_nano_v2` controller.
 
 Shields currently defined under `boards/shields/`:
 - `charybdis` — split with a PMW3360 **trackball** (on the right half).
-- `tp-sofle` — split with a PS/2 **trackpoint**.
+- `tp-sofle` — three parts, no trackpoint any more: a keyless `tp-sofle_central` on a
+  XIAO nRF52840 (`seeeduino_xiao_ble`; mock kscan, PMW3360 **trackball**, holds the
+  keymap) plus `tp-sofle_left` / `tp-sofle_right` on `nice_nano_v2`, both peripherals.
+  The central overlay is standalone (no `tp-sofle.dtsi`): the XIAO has no `&pro_micro`.
 - `corne_tp` — Corne with a trackpoint.
+- `saver` — copy of the two-part `tp-sofle` (same matrix, encoders and PS/2 trackpoint on the left
+  half, right half central) without RGB underglow.
 
 ## Directory layout — and the rule that matters
 

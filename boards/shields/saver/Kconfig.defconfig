@@ -1,28 +1,17 @@
 # Copyright (c) 2020 Ryan Cross
 # SPDX-License-Identifier: MIT
 
-# Keyless central board; both halves are peripherals.
-if SHIELD_TP_SOFLE_CENTRAL
+if SHIELD_SAVER_RIGHT
 
 config ZMK_KEYBOARD_NAME
-    default "TPSofle"
+    default "Saver"
 
 config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
-config ZMK_SPLIT_BLE_CENTRAL_PERIPHERALS
-    default 2
-
-# 5 host profiles + 2 peripherals
-config BT_MAX_CONN
-    default 7
-
-config BT_MAX_PAIRED
-    default 7
-
 endif
 
-if SHIELD_TP_SOFLE_LEFT || SHIELD_TP_SOFLE_RIGHT || SHIELD_TP_SOFLE_CENTRAL
+if SHIELD_SAVER_LEFT || SHIELD_SAVER_RIGHT
 
 config ZMK_SPLIT
     default y
@@ -54,10 +43,5 @@ endchoice
 
 endif # LVGL
 
-if ZMK_RGB_UNDERGLOW
-
-config WS2812_STRIP
-    default y
-endif
 
 endif

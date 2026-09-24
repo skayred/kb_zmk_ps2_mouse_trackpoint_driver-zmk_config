@@ -18,57 +18,10 @@
 
 
 #define MOUSE_KEYS 4
-#define MOUSE_TP 5
-#define MOUSE_TP_SET 6
 
-#include <dt-bindings/led/led.h>
-
-&pinctrl {
-    spi3_default: spi3_default {
-        group1 {
-            psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
-        };
-    };
-
-    spi3_sleep: spi3_sleep {
-        group1 {
-            psels = <NRF_PSEL(SPIM_MOSI, 0, 6)>;
-            low-power-enable;
-        };
-    };
-};
-
-&spi3 {
-    compatible = "nordic,nrf-spim";
-    status = "okay";
-
-    pinctrl-0 = <&spi3_default>;
-    pinctrl-1 = <&spi3_sleep>;
-    pinctrl-names = "default", "sleep";
-
-    led_strip: ws2812@0 {
-        compatible = "worldsemi,ws2812-spi";
-
-        /* SPI */
-        reg = <0>; /* ignored, but necessary for SPI bindings */
-        spi-max-frequency = <4000000>;
-
-        /* WS2812 */
-        chain-length = <30>; /* number of LEDs */
-        spi-one-frame = <0x70>;
-        spi-zero-frame = <0x40>;
-        color-mapping = <
-                LED_COLOR_ID_GREEN
-                LED_COLOR_ID_RED
-                LED_COLOR_ID_BLUE
-        >;
-  };
-};
-/ {
-	chosen {
-		zmk,underglow = &led_strip;
-	};
-};
+// The LED strip hardware lives in the shield: the halves' strip in
+// boards/shields/tp-sofle/boards/nice_nano_v2.overlay, the central's in
+// tp-sofle_central.overlay (the central is a XIAO, different pins).
 
 /*
  * Defines to enable/disable features
@@ -81,36 +34,11 @@
  */
 
 #define HAS_MOUSE_KEYS
-#define HAS_MOUSE_TP
 
 #ifdef HAS_MOUSE_KEYS
   #include <dt-bindings/zmk/mouse.h>
   #include <behaviors/mouse_keys.dtsi>
 #endif  // HAS_MOUSE_KEYS
-
-#ifdef HAS_MOUSE_TP
-  // We store the trackpoint settings in a separate file
-  // to make organization a little easier.
-  #include "include/mouse_tp.dtsi"
-#endif  // HAS_MOUSE_TP
-
-
-
-// Adjust layer keys based on enabled features.
-//
-// This prevents build errors when we build the firmware
-// without the mouse keys PR or the TP module.
-#ifdef HAS_MOUSE_KEYS
-  #define U_THUMB_INNER &mo MOUSE_KEYS
-#else
-  #define U_THUMB_INNER &none
-#endif  // HAS_MOUSE_KEYS
-
-#ifdef HAS_MOUSE_TP
-  #define U_TOG_TP_SET &tog MOUSE_TP_SET
-#else
-  #define U_TOG_TP_SET &none
-#endif  // HAS_MOUSE_TP
 
 
 
@@ -132,6 +60,81 @@
                 = <&macro_press &kp LGUI>, <&macro_press &kp LCTRL>
                 , <&macro_tap &kp RIGHT>
                 , <&macro_release &kp LGUI>,<&macro_release &kp LCTRL>
+                ;
+        };
+
+        /*
+         * Layer colour macros.
+         *
+         * ZMK can only CYCLE underglow effects, never select one, so the base
+         * effect has to be known: SWIRL (effect 3). Breathe is effect 1, so
+         * RGB_EFR twice steps 3 -> 2 -> 1 on press, and RGB_EFF twice steps
+         * 1 -> 2 -> 3 back to swirl on release. Spectrum and swirl ignore the
+         * hue, which is why the effect has to change for the colour to show.
+         *
+         * &rgb_ug is a global behaviour: the central runs these macros and ZMK
+         * forwards each command to both halves, which is where the LEDs are.
+         *
+         * ADJUST (LOWER+RAISE) has no key of its own, so the second key is
+         * bound per layer: the RAISE key ON the lower layer, and the LOWER key
+         * ON the raise layer, both go purple and fall back to the first layer's
+         * colour when released.
+         */
+        lower_c: lower_colour {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_press &mo LOWER>
+                , <&macro_tap &rgb_ug RGB_EFR &rgb_ug RGB_EFR &rgb_ug RGB_COLOR_HSB(120,100,100)>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo LOWER>
+                , <&macro_tap &rgb_ug RGB_EFF &rgb_ug RGB_EFF>
+                ;
+        };
+
+        raise_c: raise_colour {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_press &mo RAISE>
+                , <&macro_tap &rgb_ug RGB_EFR &rgb_ug RGB_EFR &rgb_ug RGB_COLOR_HSB(240,100,100)>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo RAISE>
+                , <&macro_tap &rgb_ug RGB_EFF &rgb_ug RGB_EFF>
+                ;
+        };
+
+        // RAISE key pressed while LOWER is held -> ADJUST, purple; back to green.
+        adjust_from_lower: adjust_from_lower {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_press &mo RAISE>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(285,100,100)>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo RAISE>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(120,100,100)>
+                ;
+        };
+
+        // LOWER key pressed while RAISE is held -> ADJUST, purple; back to blue.
+        adjust_from_raise: adjust_from_raise {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_press &mo LOWER>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(285,100,100)>
+                , <&macro_pause_for_release>
+                , <&macro_release &mo LOWER>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(240,100,100)>
                 ;
         };
     };
@@ -169,7 +172,7 @@
 &kp ESC   &kp Q  &kp W    &kp E    &kp R     &kp T                            &kp Y  &kp U     &kp I     &kp O    &kp P    &kp BSPC
 &kp TAB   &kp A  &kp S    &kp D    &kp F     &kp G                            &kp H  &kp J     &kp K     &kp L    &kp SEMI &kp SQT
 &kp LSHFT &kp Z  &kp X    &kp C    &kp V     &kp B      &kp C_PLAY_PAUSE  &kp LG(TAB)      &kp N  &kp M     &kp COMMA &kp DOT  &kp FSLH &kp INS
-                 &kp LGUI &kp LALT &kp LCTRL &mo LOWER  &kp RET    &kp SPACE  &mo RAISE  &kp EQUAL &kp PLUS  &kp MINUS
+                 &kp LGUI &kp LALT &kp LCTRL &lower_c   &kp RET    &kp SPACE  &raise_c   &kp EQUAL &kp PLUS  &kp MINUS
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP &rot_kp>;
@@ -186,10 +189,10 @@
 //               |     |      |      |      |        |  |       |      |       |       |      |
             bindings = <
 &trans    &kp F1    &kp F2    &kp F3      &kp F4    &kp F5                    &kp F6    &kp F7   &kp F8    &kp F9    &kp F10   &kp F11
-&kp GRAVE &mkp MB4  &mkp MB5  &mkp RCLK   &mkp MCLK &mkp LCLK                    &kp N6    &kp N7   &kp N8    &kp N9    &kp N0    &kp F12
+&kp GRAVE &trans    &trans    &trans      &trans    &trans                    &kp N6    &kp N7   &kp N8    &kp N9    &kp N0    &kp F12
 &trans    &kp EXCL  &kp AT    &kp HASH    &kp DLLR  &kp PRCNT                 &kp CARET &kp AMPS &kp ASTRK &kp LPAR  &kp RPAR  &kp PIPE
 &trans    &kp EQUAL &kp MINUS &kp PLUS &kp LBRC  &kp RBRC   &trans &trans  &kp LBKT  &kp RBKT &kp SEMI  &kp COLON &kp BSLH  &trans
-                    &trans    &trans      &trans    &trans     &trans &trans  &trans    &trans   &trans    &trans
+                    &trans    &trans      &trans    &trans     &trans &trans  &adjust_from_lower &trans   &trans    &trans
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
@@ -208,25 +211,25 @@
 &out OUT_BLE    &kp INS      &kp PSCRN    &kp K_CMENU  &trans       &trans                        &kp PG_UP &kp HOME  &kp UP    &kp END    &kp KP_N6 &kp KP_N6
 &out OUT_USB    &kp LALT     &kp LCTRL    &kp LSHFT    &trans       &kp CLCK                      &kp PG_DN &kp LEFT  &kp DOWN  &kp RIGHT  &kp KP_N8 &kp KP_N9
 &trans          &kp K_UNDO   &kp K_CUT    &kp K_COPY   &kp K_PASTE  &trans        &trans  &trans  &trans    &wleft    &trans    &wright    &trans    &trans
-                        &trans       &trans       &trans       &trans        &trans  &trans  &trans    &trans    &trans   &trans
+                        &trans       &trans       &trans       &adjust_from_raise  &trans  &trans  &trans    &trans    &trans   &trans
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
         };
 
         adjust_layer {
 // ----------------------------------------------------------------------------------------------------------------------------
-// | BTCLR  |  BT1    |  BT2    |   BT3   |   BT4   |   BT5   |                  | PTS+ | SENS- | SENS+ |      |       |CONFRST |
-// | EXTPWR | RGB_HUD | RGB_HUI | RGB_SAD | RGB_SAI | RGB_EFF |                  | PTS- | INERT-|INERT+ |      |       |CONFLOG |
-// |        | RGB_BRD | RGB_BRI |         |         |         |                  |      | VAL6- | VAL6+ |      |       |TPSET   |
-// | studio |         |         |         |         |         | RGB_TOG | |      |      |      |       |      |       |       |
-//                    |         |         |         |         |         | |      |      |      |       |      |
+// | BTCLR  |  BT1    |  BT2    |   BT3   |   BT4   |   BT5   |                  |      |       |       |      |       |        |
+// | EXTPWR | RGB_HUD | RGB_HUI | RGB_SAD | RGB_SAI | RGB_EFF |                  |  7   |   8   |   9   |      |       |        |
+// |        | RGB_BRD | RGB_BRI |         |         |         |                  |  4   |   5   |   6   |      |       |        |
+// | studio |         |         |         |         |         | RGB_TOG | |      |  1   |   2  |   3   |  0   |   .   |       |
+//                    |         |         |         |         |         | |      | SPACE|      |   -   |      |
             display-name = "adjust";
             bindings = <
-&bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            U_MSS_TP_PT_I  U_MSS_TP_S_D   U_MSS_TP_S_I &none &none U_MSS_RESET
-&ext_power EP_TOG &rgb_ug RGB_HUD &rgb_ug RGB_HUI &rgb_ug RGB_SAD &rgb_ug RGB_SAI &rgb_ug RGB_EFF                         U_MSS_TP_PT_D  U_MSS_TP_NI_D  U_MSS_TP_NI_I &none &none U_MSS_LOG
-&none             &rgb_ug RGB_BRD &rgb_ug RGB_BRI &none           &none           &none                                   &none          U_MSS_TP_V6_D  U_MSS_TP_V6_I &none &none U_TOG_TP_SET
-&studio_unlock    &none           &none           &none           &none           &none            &rgb_ug RGB_TOG &none  &none &none &none &none &none &none
-                                  &none           &none           &none           &trans           &none           &none  &none &none &none &none
+&bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            &none          &none          &none        &none     &none      &none
+&ext_power EP_TOG &rgb_ug RGB_HUD &rgb_ug RGB_HUI &rgb_ug RGB_SAD &rgb_ug RGB_SAI &rgb_ug RGB_EFF                         &kp KP_N7      &kp KP_N8      &kp KP_N9    &none     &none      &none
+&none             &rgb_ug RGB_BRD &rgb_ug RGB_BRI &none           &none           &none                                   &kp KP_N4      &kp KP_N5      &kp KP_N6    &none     &none      &none
+&studio_unlock    &none           &none           &none           &none           &none            &rgb_ug RGB_TOG &none  &kp KP_N1 &kp KP_N2 &kp KP_N3 &kp KP_N0 &kp KP_DOT &none
+                                  &none           &none           &none           &trans           &none           &kp SPACE &trans &kp KP_MINUS &none &none
             >;
 
             // sensor-bindings = <&inc_dec_kp RGB_BRD RGB_BRI &inc_dec_kp RGB_SAD RGB_SAI>;
@@ -236,42 +239,16 @@
 
     MouseKeys_layer {
       display-name = "MouseKeys";
+// Auto-activated by trackball movement (see &zip_temp_layer in tp-sofle_central.overlay).
+// Mouse buttons live on the LEFT thumb cluster, as on the Charybdis:
+//   GUI: LCLK (drag)   ALT: MCLK   CTRL: RCLK   ENTER: MB4   (LOWER kept)
+// Non-thumb keys deactivate this layer; all thumbs are excluded (excluded-positions).
             bindings = <
 &trans &trans   &trans   &trans    &trans    &trans                             &trans    &trans    &trans   &trans   &trans &trans
-&trans &mkp MB4 &mkp MB5 &mkp RCLK &mkp MCLK &mkp LCLK                          &trans    &trans    &trans   &trans   &trans &trans
+&trans &trans   &trans   &trans    &trans    &trans                             &trans    &trans    &trans   &trans   &trans &trans
 &trans &trans   &trans   &trans    &trans    &trans                             &trans    &trans    &trans   &trans   &trans &trans
 &trans &trans   &trans   &trans    &trans    &trans    &trans         &trans    &trans    &trans    &trans   &trans   &trans &trans
-                &trans   &trans    &trans    &trans    &trans         &trans    &trans    &trans    &trans   &trans
-            >;
-    };
-
-#endif
-
-
-#ifdef HAS_MOUSE_TP
-
-    // Automatically activated when the mouse or trackpoint moves.
-    // Configured in `include/mouse_tp.dtsi`.
-    MouseTP_layer {
-      display-name = "TP";
-      bindings = <
-&bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            U_MSS_TP_PT_I  U_MSS_TP_S_D   U_MSS_TP_S_I &none &none U_MSS_RESET
-&ext_power EP_TOG &rgb_ug RGB_HUD &rgb_ug RGB_HUI &rgb_ug RGB_SAD &rgb_ug RGB_SAI &rgb_ug RGB_EFF                         U_MSS_TP_PT_D  U_MSS_TP_NI_D  U_MSS_TP_NI_I &none &none U_MSS_LOG
-&none             &rgb_ug RGB_BRD &rgb_ug RGB_BRI &none           &none           &none                                   &none          U_MSS_TP_V6_D  U_MSS_TP_V6_I &none &none U_TOG_TP_SET
-&none             &none           &none           &none           &none           &none            &rgb_ug RGB_TOG &none  &none &none &none &none &none &none
-                                  &none           &none           &mkp MCLK       &mkp RCLK        &mkp LCLK           &none  &none &none &none &none
-            >;
-    };
-
-    // You can find the defines for the actual key press behaviors in `include/mouse_tp.dtsi`.
-    MouseSettings_layer {
-      display-name = "TP Set";
-      bindings = <
-&bt BT_CLR        &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4                            U_MSS_TP_PT_I  U_MSS_TP_S_D   U_MSS_TP_S_I &none &none U_MSS_RESET
-&ext_power EP_TOG &rgb_ug RGB_HUD &rgb_ug RGB_HUI &rgb_ug RGB_SAD &rgb_ug RGB_SAI &rgb_ug RGB_EFF                         U_MSS_TP_PT_D  U_MSS_TP_NI_D  U_MSS_TP_NI_I &none &none U_MSS_LOG
-&none             &rgb_ug RGB_BRD &rgb_ug RGB_BRI &none           &none           &none                                   &none          U_MSS_TP_V6_D  U_MSS_TP_V6_I &none &none U_TOG_TP_SET
-&none             &none           &none           &none           &none           &none            &rgb_ug RGB_TOG &none  &none &none &none &none &none &none
-                                  &none           &none           &mkp MCLK       &mkp RCLK        &mkp LCLK           &none  &none &none &none &none
+                &mkp LCLK &mkp MCLK &mkp RCLK &trans    &mkp MB4      &trans    &trans    &trans    &trans   &trans
             >;
     };
 
