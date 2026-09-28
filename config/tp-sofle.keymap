@@ -66,11 +66,10 @@
         /*
          * Layer colour macros.
          *
-         * ZMK can only CYCLE underglow effects, never select one, so the base
-         * effect has to be known: SWIRL (effect 3). Breathe is effect 1, so
-         * RGB_EFR twice steps 3 -> 2 -> 1 on press, and RGB_EFF twice steps
-         * 1 -> 2 -> 3 back to swirl on release. Spectrum and swirl ignore the
-         * hue, which is why the effect has to change for the colour to show.
+         * The effect is never touched (it stays on the default, SWIRL; see
+         * CONFIG_ZMK_RGB_UNDERGLOW_EFF_START); only the colour changes: the
+         * layer colour on press, back to the base hue (50, as
+         * CONFIG_ZMK_RGB_UNDERGLOW_HUE_START) on release.
          *
          * &rgb_ug is a global behaviour: the central runs these macros and ZMK
          * forwards each command to both halves, which is where the LEDs are.
@@ -87,10 +86,10 @@
             tap-ms = <0>;
             bindings
                 = <&macro_press &mo LOWER>
-                , <&macro_tap &rgb_ug RGB_EFR &rgb_ug RGB_EFR &rgb_ug RGB_COLOR_HSB(120,100,100)>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(120,100,100)>
                 , <&macro_pause_for_release>
                 , <&macro_release &mo LOWER>
-                , <&macro_tap &rgb_ug RGB_EFF &rgb_ug RGB_EFF>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(50,100,100)>
                 ;
         };
 
@@ -101,10 +100,10 @@
             tap-ms = <0>;
             bindings
                 = <&macro_press &mo RAISE>
-                , <&macro_tap &rgb_ug RGB_EFR &rgb_ug RGB_EFR &rgb_ug RGB_COLOR_HSB(240,100,100)>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(240,100,100)>
                 , <&macro_pause_for_release>
                 , <&macro_release &mo RAISE>
-                , <&macro_tap &rgb_ug RGB_EFF &rgb_ug RGB_EFF>
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(50,100,100)>
                 ;
         };
 
