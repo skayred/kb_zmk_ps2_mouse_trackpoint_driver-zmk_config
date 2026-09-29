@@ -163,9 +163,10 @@
     device = <&trackball>;
 
     // Both axes inverted (up <-> down, left <-> right), then activate the
-    // MOUSE_KEYS layer (index 4) for 500ms on trackball movement. The LOWER
-    // scroller below replaces these processors and sets its own inversion.
-    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>, <&zip_temp_layer 4 500>;
+    // MOUSE_KEYS layer (index 4) for 1000ms on trackball movement (as on the
+    // Charybdis). The overrides below replace these processors, so each one
+    // carries its own inversion.
+    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>, <&zip_temp_layer 4 1000>;
 
     // On the LOWER layer (index 1), trackball movement scrolls instead of moving
     // the cursor, at 50% speed. Both scroll directions are flipped like the
@@ -173,6 +174,16 @@
     scroller {
         layers = <1>;
         input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT)>, <&zip_xy_scaler 1 2>, <&zip_xy_to_scroll_mapper>;
+    };
+
+    // Slow plain cursor movement to 60% (x3/5), as on the Charybdis. Targets the
+    // auto MOUSE_KEYS layer (4), which is active during normal pointing. Placed
+    // after the scroller so LOWER matches first and scrolling is untouched.
+    // zip_temp_layer is repeated so continued movement keeps re-arming the 1s
+    // timeout (an override REPLACES the default processors); keep it in sync.
+    slow_cursor {
+        layers = <4>;
+        input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>, <&zip_temp_layer 4 1000>, <&zip_xy_scaler 3 5>;
     };
   };
 };
