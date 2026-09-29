@@ -44,8 +44,10 @@ here take precedence over the shield defaults:
   top (last value wins). Put half-specific symbols in
   `config/<shield>_left.conf` / `config/<shield>_right.conf` so they are not applied to
   the other half (e.g. a trackball symbol on the half without the sensor would warn).
-- **`.overlay` — layered override.** The shield overlay applies, then the first matching
-  `config/*.overlay` is layered on top.
+- **`.overlay` — applied BEFORE the shield overlay, so it cannot override it.** Build
+  order is board overlay → `config/<shield>.overlay` → shield overlay → keymap, so a
+  property the shield overlay sets (e.g. a listener's `input-processors`) wins over the
+  same property in `config/`. Change such properties in the shield overlay itself.
 
 ### Rule of thumb for where an edit goes
 - Wiring / matrix / column order / sensor presence / split role / fixing a shield's own

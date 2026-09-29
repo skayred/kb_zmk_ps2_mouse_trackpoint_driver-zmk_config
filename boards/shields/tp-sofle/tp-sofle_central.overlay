@@ -162,8 +162,10 @@
     compatible = "zmk,input-listener";
     device = <&trackball>;
 
-    // Activate the MOUSE_KEYS layer (index 4) for 500ms on trackball movement.
-    input-processors = <&zip_temp_layer 4 500>;
+    // Both axes inverted (up <-> down, left <-> right), then activate the
+    // MOUSE_KEYS layer (index 4) for 500ms on trackball movement. The LOWER
+    // scroller below replaces these processors, so scrolling is unaffected.
+    input-processors = <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)>, <&zip_temp_layer 4 500>;
 
     // On the LOWER layer (index 1), trackball movement scrolls instead of moving
     // the cursor, at 50% speed, Y inverted for natural vertical scroll.
