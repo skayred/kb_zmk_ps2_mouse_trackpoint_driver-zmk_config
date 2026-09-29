@@ -3,3 +3,8 @@
 
 # Temporary files
 keymap_img/keymap.yaml
+
+# Emacs backup / autosave files
+*~
+\#*\#
+.#*
