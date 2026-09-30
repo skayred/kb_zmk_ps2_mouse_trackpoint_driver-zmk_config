@@ -10,9 +10,9 @@ keyboard is a ZMK *shield* running on a `nice_nano_v2` controller.
 
 Shields currently defined under `boards/shields/`:
 - `charybdis` — split with a PMW3360 **trackball** (on the right half).
-- `tp-sofle` — three parts, no trackpoint any more: a keyless `tp-sofle_central` on a
-  XIAO nRF52840 (`seeeduino_xiao_ble`; mock kscan, PMW3360 **trackball**, holds the
-  keymap) plus `tp-sofle_left` / `tp-sofle_right` on `nice_nano_v2`, both peripherals.
+- `tp-sofle` — three parts, no trackpoint any more: a `tp-sofle_central` on a
+  XIAO nRF52840 (`seeeduino_xiao_ble`; PMW3360 **trackball**, 3 mouse buttons as a
+  1x3 matrix at positions 60-62 via `row-offset = <5>`, holds the keymap) plus `tp-sofle_left` / `tp-sofle_right` on `nice_nano_v2`, both peripherals.
   The central overlay is standalone (no `tp-sofle.dtsi`): the XIAO has no `&pro_micro`.
 - `corne_tp` — Corne with a trackpoint.
 - `saver` — copy of the two-part `tp-sofle` (same matrix, encoders and PS/2 trackpoint on the left

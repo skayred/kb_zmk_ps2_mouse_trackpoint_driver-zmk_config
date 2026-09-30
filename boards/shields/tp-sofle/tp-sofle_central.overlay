@@ -1,7 +1,7 @@
 /*
- * Keyless central for the TPSofle, on a Seeed XIAO nRF52840 (seeeduino_xiao_ble).
+ * Central for the TPSofle, on a Seeed XIAO nRF52840 (seeeduino_xiao_ble).
  * Both halves are BLE peripherals; this board holds the keymap, talks to the host
- * and has the PMW3360 trackball.
+ * and has the PMW3360 trackball plus three mouse buttons (left, middle, right).
  *
  * Standalone on purpose: tp-sofle.dtsi uses &pro_micro pins, which the XIAO does
  * not have, so only the shared layout is included here.
@@ -26,13 +26,20 @@
         zmk,underglow = &led_strip;
     };
 
-    // No keys on this board yet: a mock kscan that never reports anything.
+    // Three mouse buttons as a 1-column x 3-row matrix, so no GND wire is needed:
+    // each switch goes between its row pin and the shared column pin D7, which
+    // the scan drives high. One column cannot ghost, so no diodes are needed.
+    //   D4 (P0.04) left   D5 (P0.05) middle   D6 (P1.11) right   D7 (P1.12) column
     // Labelled kscan0 so the shared physical layout resolves to it.
-    kscan0: mock_kscan {
-        compatible = "zmk,kscan-mock";
-        columns = <0>;
-        rows = <0>;
-        events = <0>;
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";
+        col-gpios = <&gpio1 12 GPIO_ACTIVE_HIGH>;
+        row-gpios
+            = <&gpio0 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
     };
 
     // The encoders are on the halves; the central only needs the sensor list so
@@ -61,6 +68,15 @@
         control-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
     };
 
+};
+
+// The central's matrix rows 0-2 map to transform rows 5-7 (positions 60-62),
+// clear of the halves' keys.
+&default_transform0 {
+    row-offset = <5>;
+};
+
+/ {
     sensors: sensors {
         compatible = "zmk,keymap-sensors";
         sensors = <&left_encoder &right_encoder>;
@@ -152,9 +168,10 @@
 // Auto-mouse layer (4) deactivation: by default ANY keypress drops the temp
 // layer. Exclude all thumb positions (50-59), as on the Charybdis, so the mouse
 // buttons (left thumbs), LOWER and RAISE never drop it -- only the main
-// (non-thumb) keys deactivate the layer.
+// (non-thumb) keys deactivate the layer. The XIAO mouse buttons (60-62) are
+// excluded too, so clicking keeps the layer.
 &zip_temp_layer {
-    excluded-positions = <50 51 52 53 54 55 56 57 58 59>;
+    excluded-positions = <50 51 52 53 54 55 56 57 58 59 60 61 62>;
 };
 
 / {
